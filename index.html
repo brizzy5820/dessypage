@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coach Dessy — Graphic Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #f80020;
+    --red-dark: #b8e20;
+    --red-glow: rgba(232,39,42,0.18);
+    --white: #ffffff;
+    --off-white: #f0ece4;
+    --dark: #0a0a0a;
+    --dark2: #111111;
+    --dark3: #181818;
+    --dark4: #1f1f1f;
+    --gray: #888;
+    --gray-light: #bbbbbb;
+    --gold: #c9a84c;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--red);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(232,39,42,0.5);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 52px; height: 52px;
+    border-color: var(--red);
+  }
+
+  /* ANIMATED BG */
+  .bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bg-canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(232,39,42,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(232,39,42,0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, rgba(15,15,15,0.9) 0%, transparent 100%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+  }
+
+  /* NOISE TEXTURE */
+  .bg-canvas::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+  }
+
+  /* FLOATING GEOMETRIC SHAPES */
+  .geo {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+  }
+  .geo-1 {
+    width: 400px; height: 400px;
+    border: 1px solid var(--red);
+    border-radius: 50%;
+    top: -100px; right: -100px;
+    animation: geoFloat1 12s ease-in-out infinite;
+  }
+  .geo-2 {
+    width: 200px; height: 200px;
+    border: 1px solid var(--white);
+    top: 40%; left: -60px;
+    animation: geoFloat2 15s ease-in-out infinite;
+  }
+  .geo-3 {
+    width: 300px; height: 300px;
+    border: 1px solid var(--red);
+    bottom: 15%; right: 5%;
+    transform: rotate(45deg);
+    animation: geoFloat3 18s ease-in-out infinite;
+  }
+  @keyframes geoFloat1 { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(-20px,30px) rotate(10deg)} }
+  @keyframes geoFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,-20px)} }
+  @keyframes geoFloat3 { 0%,100%{transform:rotate(45deg) translate(0,0)} 50%{transform:rotate(55deg) translate(-10px,15px)} }
+
+  /* SCROLL PROGRESS */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--red);
+    z-index: 1000;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* NAVBAR */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,10,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: padding 0.3s;
+  }
+  nav.scrolled { padding: 14px 5%; }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--red);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: var(--red);
+    color: var(--white) !important;
+    padding: 8px 20px;
+    border-radius: 2px;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.1em;
+  }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--red-dark) !important; color: var(--white) !important; }
+
+  /* HAMBURGER */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: none;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px; height: 1.5px;
+    background: var(--white);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px,4.5px); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
+
+  /* MOBILE NAV */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    background: rgba(10,10,10,0.97);
+    backdrop-filter: blur(20px);
+    padding: 2rem 5%;
+    z-index: 99;
+    flex-direction: column;
+    gap: 1.5rem;
+    border-bottom: 1px solid rgba(232,39,42,0.2);
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .mobile-nav.open { display: flex; transform: translateY(0); opacity: 1; }
+  .mobile-nav a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-bottom: 1rem;
+    transition: color 0.2s;
+  }
+  .mobile-nav a:hover { color: var(--red); }
+
+  /* MAIN WRAPPER */
+  main {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 5% 80px;
+    position: relative;
+  }
+  .hero-inner { max-width: 700px; }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(232,39,42,0.3);
+    padding: 6px 18px;
+    border-radius: 2px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: blink 1.5s ease infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  .hero h1 .line-red { color: var(--red); display: block; }
+  .hero h1 .line-outline {
+    -webkit-text-stroke: 1.5px var(--white);
+    color: transparent;
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    color: var(--gray);
+    line-height: 1.7;
+    margin: 2rem auto;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.7s forwards;
+  }
+
+  .hero-name-pill {
+    display: inline-block;
+    background: var(--dark3);
+    border: 1px solid rgba(232,39,42,0.25);
+    padding: 8px 22px;
+    margin-top: 32px;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.6s forwards;
+  }
+  .hero-name-pill span { color: var(--red); }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.9s forwards;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    text-decoration: none;
+    padding: 14px 32px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: background 0.25s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); }
+
+  .btn-outline {
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--white);
+    text-decoration: none;
+    padding: 14px 32px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: border-color 0.25s, background 0.25s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--red); background: var(--red-glow); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.4s forwards;
+  }
+  .hero-scroll span {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--red), transparent);
+    animation: scrollLine 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* SECTION COMMON */
+  section { padding: 100px 5%; position: relative; }
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--red);
+    display: inline-block;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+  .section-title span { color: var(--red); }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(232,39,42,0.3), transparent);
+    margin: 0;
+  }
+
+  /* ── ABOUT ── */
+  .about { background: var(--dark2); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .about-photo-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .about-photo-frame {
+    position: relative;
+    width: 260px;
+    height: 300px;
+  }
+  .about-photo-frame::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border: 1px solid rgba(232,39,42,0.3);
+    border-radius: 2px;
+    animation: frameGlow 3s ease-in-out infinite alternate;
+  }
+  @keyframes frameGlow {
+    from { border-color: rgba(232,39,42,0.2); }
+    to { border-color: rgba(232,39,42,0.6); }
+  }
+  .about-photo-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; right: -8px;
+    width: 100%; height: 100%;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+  }
+  .photo-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--dark3) 0%, var(--dark4) 100%);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .photo-placeholder-inner {
+    text-align: center;
+  }
+  .photo-placeholder img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-avatar-ring {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: var(--dark4);
+    border: 2px solid rgba(232,39,42,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--red);
+    letter-spacing: 0.1em;
+  }
+  .photo-tag {
+    width: 100%;
+    height:100%;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .about-text .hello {
+    font-size: 0.8rem;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+  .about-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--red);
+    letter-spacing: 0.05em;
+    margin-bottom: 1.2rem;
+    line-height: 1;
+  }
+  .about-body {
+    font-size: 0.92rem;
+    color: var(--gray-light);
+    line-height: 1.85;
+    margin-bottom: 1.2rem;
+  }
+  .about-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--red);
+    line-height: 1;
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.68rem;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* ── WORKS ── */
+  .works { background: var(--dark); }
+  .works-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .works-see-all {
+    color: var(--red);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(232,39,42,0.3);
+    padding-bottom: 3px;
+    transition: border-color 0.2s;
+    white-space: nowrap;
+  }
+  .works-see-all:hover { border-color: var(--red); }
+
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .work-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--dark3);
+    aspect-ratio: 4/3;
+    cursor: none;
+  }
+  .work-item:first-child {
+    grid-column: span 2;
+    aspect-ratio: 16/9;
+  }
+
+  .work-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.5s ease;
+    position: relative;
+    overflow: hidden;
+  }
+.work-img-placeholder img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  /* Gradient overlays per card */
+  .work-item:nth-child(1) .work-img-placeholder { background: linear-gradient(135deg, #1a0a0a 0%, #2d1010 50%, #180505 100%); }
+  .work-item:nth-child(2) .work-img-placeholder { background: linear-gradient(135deg, #0a0f1a 0%, #101a2d 50%, #050d18 100%); }
+  .work-item:nth-child(3) .work-img-placeholder { background: linear-gradient(135deg, #0a1a0f 0%, #0f2a18 50%, #051508 100%); }
+  .work-item:nth-child(4) .work-img-placeholder { background: linear-gradient(135deg, #1a150a 0%, #2d2310 50%, #181005 100%); }
+  .work-item:nth-child(5) .work-img-placeholder { background: linear-gradient(135deg, #150a1a 0%, #230f2d 50%, #100518 100%); }
+  .work-item:nth-child(6) .work-img-placeholder { background: linear-gradient(135deg, #1a0a12 0%, #2d1020 50%, #18050e 100%); }
+
+  .work-icon-wrap {
+    width: 60px; height: 60px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: rgba(255,255,255,0.2);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .work-item:hover .work-img-placeholder { transform: scale(1.04); }
+  .work-item:hover .work-icon-wrap { border-color: var(--red); color: var(--red); }
+
+  .work-placeholder-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.15);
+    transition: color 0.3s;
+  }
+  .work-item:hover .work-placeholder-label { color: rgba(255,255,255,0.35); }
+
+  .work-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+  }
+  .work-item:hover .work-overlay { opacity: 1; }
+  .work-cat {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+    transform: translateY(8px);
+    transition: transform 0.35s ease 0.05s;
+  }
+  .work-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--white);
+    line-height: 1.3;
+    transform: translateY(8px);
+    transition: transform 0.35s ease 0.1s;
+  }
+  .work-item:hover .work-cat,
+  .work-item:hover .work-title { transform: translateY(0); }
+
+  /* WORKS image note */
+  .works-note {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 0.75rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+    font-style: italic;
+  }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    background: var(--dark2);
+    text-align: center;
+    padding: 80px 5%;
+  }
+  .cta-arrows {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 2rem;
+  }
+  .cta-arrow {
+    width: 0; height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 18px solid var(--red);
+    animation: arrowBounce 1.2s ease-in-out infinite;
+  }
+  .cta-arrow:nth-child(2) { animation-delay: 0.2s; opacity: 0.6; }
+  .cta-arrow:nth-child(3) { animation-delay: 0.4s; opacity: 0.3; }
+  @keyframes arrowBounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+  .cta-banner .btn-primary { font-size: 0.85rem; padding: 16px 40px; }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--dark); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .tcard {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 2px;
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .tcard:hover {
+    border-color: rgba(232,39,42,0.25);
+    transform: translateY(-4px);
+  }
+  .tcard::before {
+    content: '"';
+    position: absolute;
+    top: -10px; right: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: rgba(232,39,42,0.06);
+    line-height: 1;
+  }
+  .tcard-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.2rem;
+  }
+  .tcard-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--dark4);
+    border: 1.5px solid rgba(232,39,42,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: var(--red);
+    flex-shrink: 0;
+  }
+  .tcard-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--red);
+    margin-bottom: 2px;
+  }
+  .tcard-role {
+    font-size: 0.7rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+  }
+  .tcard-text {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+  }
+  .tcard-stars { color: var(--red); letter-spacing: 3px; font-size: 0.85rem; }
+
+  /* ── CONTACT ── */
+  .contact { background: var(--dark2); text-align: center; }
+  .contact-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 2.5rem;
+  }
+  .contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    max-width: 320px;
+    padding: 16px 28px;
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    transition: transform 0.25s, background 0.25s;
+  }
+  .contact-btn.whatsapp {
+    background: var(--red);
+    color: var(--white);
+  }
+  .contact-btn.whatsapp:hover { background: var(--red-dark); transform: translateY(-2px); }
+  .contact-btn.email {
+    background: transparent;
+    border: 1px solid rgba(232,39,42,0.35);
+    color: var(--white);
+  }
+  .contact-btn.email:hover { background: var(--red-glow); border-color: var(--red); transform: translateY(-2px); }
+  .contact-btn-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    padding: 30px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    color: var(--gray);
+  }
+  .footer-logo span { color: var(--red); }
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .footer-links a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--red); }
+  .footer-credit {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
+  }
+
+  /* ANIMATIONS ON SCROLL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-photo-wrap { justify-content: center; }
+    .works-grid { grid-template-columns: repeat(2, 1fr); }
+    .works-grid .work-item:first-child { grid-column: span 2; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .nav-cta-desktop { display: none; }
+    body::-webkit-scrollbar {
+  display: none;
+}
+  }
+  @media (max-width: 600px) {
+    section { padding: 70px 6%; }
+    .works-grid { grid-template-columns: 1fr; gap: 1px; }
+    .works-grid .work-item:first-child { grid-column: span 1; }
+    .hero h1 { font-size: clamp(3rem, 14vw, 5rem); }
+    .about-stats { gap: 1.5rem; }
+    .tcard { padding: 1.4rem; }
+    footer { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .footer-links { flex-wrap: wrap; gap: 1rem; }
+  }
+  .works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.work-item {
+  position: relative;
+  overflow: hidden;
+  background: var(--dark3);
+  aspect-ratio: 1 / 1;   /* square like the gallery */
+  cursor: none;
+}
+
+/* remove the old :first-child span-2 rule */
+.work-item:first-child {
+  grid-column: span 1;
+  aspect-ratio: 1 / 1;
+}
+
+.work-img-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.work-img-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.work-item:hover .work-img-placeholder img {
+  transform: scale(1.04);
+}
+
+/* tablet → 2 col */
+@media (max-width: 900px) {
+  .works-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+/* mobile → 2 col (same as gallery) */
+@media (max-width: 600px) {
+  .works-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- SCROLL PROGRESS -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- BACKGROUND -->
+<div class="bg-canvas"></div>
+<div class="geo geo-1"></div>
+<div class="geo geo-2"></div>
+<div class="geo geo-3"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Dessy<span>Designs</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#works">Works</a></li>
+    <li><a href="#testimonials">Clients</a></li>
+    <li><a href="#contact" class="nav-cta">Hire Me</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#works" onclick="closeMobileNav()">Works</a>
+  <a href="#testimonials" onclick="closeMobileNav()">Clients</a>
+  <a href="#contact" onclick="closeMobileNav()">Hire Me</a>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Available for Projects</div>
+      <h1>
+        <span class="line-red">Welcome to</span>
+        <span>My Design</span>
+        <span class="line-outline">Portfolio</span>
+      </h1>
+      <div class="hero-name-pill">Destiny Ikechukwu  &nbsp;/&nbsp; <span>Graphic Designer</span></div>
+      <p class="hero-sub">Creating bold, unforgettable visual identities and graphic design that captures attention, communicates clearly, and converts.</p>
+      <div class="hero-btns">
+        <a href="#works" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-outline">Let's Talk</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <!-- <span>Scroll</span> -->
+      <!-- <div class="scroll-line"></div> -->
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div class="about-photo-wrap reveal-left">
+        <div class="about-photo-frame">
+          <div class="photo-placeholder">
+            <img src="img/1760714053794.jpg.jpeg" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="about-text reveal-right">
+        <div class="section-label">About Me</div>
+        <p class="hello">Hello, I'm</p>
+        <div class="about-name">Destiny Ikechukwu</div>
+        <p class="about-body">
+         I'm a graphic designer with 5 years of experience crafting purposeful visuals that communicate, connect, and convert. From brand identity to digital content, I bring creativity and strategy together to deliver designs that leave a lasting impression.
+        </p>
+        <p class="about-body">
+          I specialise in brand design, social media content, print graphics, and promotional materials — always delivering work that not only looks stunning but drives real results for my clients.
+        </p>
+        <div class="about-stats">
+          <div class="stat-item">
+            <span class="stat-num">5+</span>
+            <span class="stat-label">Years Experience</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">80+</span>
+            <span class="stat-label">Projects Done</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">40+</span>
+            <span class="stat-label">Happy Clients</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WORKS -->
+  <section class="works" id="works">
+    <div class="works-header reveal">
+      <div>
+        <div class="section-label">Portfolio</div>
+        <div class="section-title">Few of My <span>Works</span></div>
+      </div>
+      <a href="gallery.html" class="works-see-all">See All Works →</a>
+    </div>
+
+<div class="works-grid">
+
+  <!-- Card 1 -->
+  <div class="work-item reveal reveal-delay-1">
+    <div class="work-img-placeholder">
+      <img src="img/workii.jpeg" alt="Brand Design Project">
+    </div>
+    <div class="work-overlay">
+     
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="work-item reveal reveal-delay-2">
+    <div class="work-img-placeholder">
+      <img src="img/worki.jpeg" alt="Social Content Design">
+    </div>
+    <div class="work-overlay">
+    
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="work-item reveal reveal-delay-3">
+    <div class="work-img-placeholder">
+      <img src="img/work13.jpeg" alt="Print Design">
+    </div>
+    <div class="work-overlay">
+   
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="work-item reveal reveal-delay-1">
+    <div class="work-img-placeholder">
+      <img src="img/work16.jpeg" alt="Event Flyer">
+    </div>
+    <div class="work-overlay">
+    
+    </div>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="work-item reveal reveal-delay-2">
+    <div class="work-img-placeholder">
+      <img src="img/workiii.jpeg" alt="Logo Design">
+    </div>
+    <div class="work-overlay">
+      
+    </div>
+  </div>
+
+  <!-- Card 6 -->
+  <div class="work-item reveal reveal-delay-3">
+    <div class="work-img-placeholder">
+      <img src="img/workiv.jpeg" alt="Marketing Creatives">
+    </div>
+    <div class="work-overlay">
+     
+    </div>
+  </div>
+
+</div>
+
+    <!-- <p class="works-note reveal">Replace placeholder cards with your actual design images to bring your portfolio to life.</p> -->
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner reveal">
+    <div class="cta-arrows">
+      <div class="cta-arrow"></div>
+      <div class="cta-arrow"></div>
+      <div class="cta-arrow"></div>
+    </div>
+    <a href="gallery.html" class="btn-primary">Click here to see my entire design samples</a>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="testimonials">
+    <div style="text-align:center; margin-bottom: 3.5rem;" class="reveal">
+      <div class="section-label" style="justify-content:center;">Reviews</div>
+      <div class="section-title">What My <span>Clients</span> Say</div>
+    </div>
+
+    <div class="testimonials-grid">
+
+      <div class="tcard reveal reveal-delay-1">
+        <div class="tcard-header">
+          <div class="tcard-avatar">EF</div>
+          <div>
+            <div class="tcard-name">Ekenma Favour</div>
+            <div class="tcard-role">Founder / Marketing Strategist</div>
+          </div>
+        </div>
+        <p class="tcard-text">I admire the ease of working with you. I don't have to constantly follow you up or chase you around. You clarify questions, set a realistic timeframe for delivery and deliver as you said. Truly excellent work!</p>
+        <div class="tcard-stars">★★★★★</div>
+      </div>
+
+      <div class="tcard reveal reveal-delay-2">
+        <div class="tcard-header">
+          <div class="tcard-avatar">AC</div>
+          <div>
+            <div class="tcard-name">Amara Christa</div>
+            <div class="tcard-role">Business Owner</div>
+          </div>
+        </div>
+        <p class="tcard-text">Coach Dessy, I really love your services, especially your prompt response and delivery. I've recommended your services to about 3 people. I'll keep recommending you because YOU ARE GOOD!</p>
+        <div class="tcard-stars">★★★★★</div>
+      </div>
+
+      <div class="tcard reveal reveal-delay-3">
+        <div class="tcard-header">
+          <div class="tcard-avatar">KC</div>
+          <div>
+            <div class="tcard-name">Kennedy Chukwuma</div>
+            <div class="tcard-role">Freelance Brand Expert</div>
+          </div>
+        </div>
+        <p class="tcard-text">Coach Dessy is someone I truly admire for their exceptional work ethic. They deliver projects promptly, maintain top-quality standards. I can confidently recommend them any day.</p>
+        <div class="tcard-stars">★★★★★</div>
+      </div>
+
+      <div class="tcard reveal reveal-delay-1">
+        <div class="tcard-header">
+          <div class="tcard-avatar">ED</div>
+          <div>
+            <div class="tcard-name">Esther Diou</div>
+            <div class="tcard-role">Project Manager for Creatives</div>
+          </div>
+        </div>
+        <p class="tcard-text">When it comes to design, leave it to Coach Dessy. They know the craft and they are genuinely good at what they do. The work was attention-grabbing and converted immediately. Reach out today!</p>
+        <div class="tcard-stars">★★★★★</div>
+      </div>
+
+      <div class="tcard reveal reveal-delay-2">
+        <div class="tcard-header">
+          <div class="tcard-avatar">PO</div>
+          <div>
+            <div class="tcard-name">Precious Okanume</div>
+            <div class="tcard-role">Team Lead, Studio Manager</div>
+          </div>
+        </div>
+        <p class="tcard-text">I admire your prompt communication, fast delivery and your willingness to deliver quality. You're not just concerned about the money — you make sure the design meets the client's expectations. I can confidently recommend you.</p>
+        <div class="tcard-stars">★★★★★</div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="reveal">
+      <div class="section-label" style="justify-content:center;">Contact</div>
+      <div class="section-title">Get in <span>Touch</span> With Me</div>
+      <p style="color:var(--gray); font-size:0.9rem; max-width:400px; margin:0 auto; line-height:1.7;">
+        Ready to elevate your brand with striking visuals? Let's create something memorable together.
+      </p>
+    </div>
+    <div class="contact-btns reveal reveal-delay-1">
+      <a href="https://wa.link/3ehtk6" class="contact-btn whatsapp">
+        <div class="contact-btn-icon"></div>
+        Send me a DM
+      </a>
+      <a href="mailto:destinyejikeme0@gmail.com" class="contact-btn email">
+        <div class="contact-btn-icon"></div>
+        Send me an email
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Coach<span>Dessy</span></div>
+  <ul class="footer-links">
+    <li><a href="#">Terms &amp; Support</a></li>
+    <li><a href="#">Privacy Policy</a></li>
+    <li><a href="#">Instagram</a></li>
+  </ul>
+  <div class="footer-credit">Designed with ♥</div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // SCROLL PROGRESS
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // NAV SCROLL
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // HAMBURGER
+  const ham = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+  function closeMobileNav() {
+    ham.classList.remove('open');
+    mobileNav.classList.remove('open');
+  }
+
+  // REVEAL ON SCROLL
+  const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
