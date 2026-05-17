@@ -973,6 +973,60 @@
     gap: 6px;
   }
 }
+/* IMAGE TESTIMONIAL CARDS */
+.tcard-img {
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.tcard-img::before {
+  display: none; /* remove the quote mark decoration */
+}
+
+.tcard-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 2px;
+  transition: transform 0.4s ease;
+}
+
+.tcard-img:hover {
+  border-color: rgba(232, 39, 42, 0.25);
+  transform: translateY(-4px);
+}
+
+.tcard-img:hover img {
+  transform: scale(1.02);
+}
+
+/* GRID — 3 col desktop, 1 col mobile */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  align-items: start; /* cards align to top since heights differ */
+}
+
+@media (max-width: 900px) {
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 420px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1167,78 +1221,29 @@
 
   <div class="divider"></div>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials" id="testimonials">
-    <div style="text-align:center; margin-bottom: 3.5rem;" class="reveal">
-      <div class="section-label" style="justify-content:center;">Reviews</div>
-      <div class="section-title">What My <span>Clients</span> Say</div>
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div style="text-align:center; margin-bottom: 3.5rem;" class="reveal">
+    <div class="section-label" style="justify-content:center;">Reviews</div>
+    <div class="section-title">What My <span>Clients</span> Say</div>
+  </div>
+
+  <div class="testimonials-grid">
+
+    <div class="tcard tcard-img reveal reveal-delay-1">
+      <img src="img/res1.png" alt="Chinedu Paul Nnamani review">
     </div>
 
-    <div class="testimonials-grid">
-
-      <div class="tcard reveal reveal-delay-1">
-        <div class="tcard-header">
-          <div class="tcard-avatar">EF</div>
-          <div>
-            <div class="tcard-name">Ekenma Favour</div>
-            <div class="tcard-role">Founder / Marketing Strategist</div>
-          </div>
-        </div>
-        <p class="tcard-text">I admire the ease of working with you. I don't have to constantly follow you up or chase you around. You clarify questions, set a realistic timeframe for delivery and deliver as you said. Truly excellent work!</p>
-        <div class="tcard-stars">★★★★★</div>
-      </div>
-
-      <div class="tcard reveal reveal-delay-2">
-        <div class="tcard-header">
-          <div class="tcard-avatar">AC</div>
-          <div>
-            <div class="tcard-name">Amara Christa</div>
-            <div class="tcard-role">Business Owner</div>
-          </div>
-        </div>
-        <p class="tcard-text">Coach Dessy, I really love your services, especially your prompt response and delivery. I've recommended your services to about 3 people. I'll keep recommending you because YOU ARE GOOD!</p>
-        <div class="tcard-stars">★★★★★</div>
-      </div>
-
-      <div class="tcard reveal reveal-delay-3">
-        <div class="tcard-header">
-          <div class="tcard-avatar">KC</div>
-          <div>
-            <div class="tcard-name">Kennedy Chukwuma</div>
-            <div class="tcard-role">Freelance Brand Expert</div>
-          </div>
-        </div>
-        <p class="tcard-text">Coach Dessy is someone I truly admire for their exceptional work ethic. They deliver projects promptly, maintain top-quality standards. I can confidently recommend them any day.</p>
-        <div class="tcard-stars">★★★★★</div>
-      </div>
-
-      <div class="tcard reveal reveal-delay-1">
-        <div class="tcard-header">
-          <div class="tcard-avatar">ED</div>
-          <div>
-            <div class="tcard-name">Esther Diou</div>
-            <div class="tcard-role">Project Manager for Creatives</div>
-          </div>
-        </div>
-        <p class="tcard-text">When it comes to design, leave it to Coach Dessy. They know the craft and they are genuinely good at what they do. The work was attention-grabbing and converted immediately. Reach out today!</p>
-        <div class="tcard-stars">★★★★★</div>
-      </div>
-
-      <div class="tcard reveal reveal-delay-2">
-        <div class="tcard-header">
-          <div class="tcard-avatar">PO</div>
-          <div>
-            <div class="tcard-name">Precious Okanume</div>
-            <div class="tcard-role">Team Lead, Studio Manager</div>
-          </div>
-        </div>
-        <p class="tcard-text">I admire your prompt communication, fast delivery and your willingness to deliver quality. You're not just concerned about the money — you make sure the design meets the client's expectations. I can confidently recommend you.</p>
-        <div class="tcard-stars">★★★★★</div>
-      </div>
-
+    <div class="tcard tcard-img reveal reveal-delay-2">
+      <img src="img/res2.png" alt="Oruka Otuene Godstime review">
     </div>
-  </section>
 
+    <div class="tcard tcard-img reveal reveal-delay-3">
+      <img src="img/res3.png" alt="Nancy Paul review">
+    </div>
+
+  </div>
+</section>
   <div class="divider"></div>
 
   <!-- CONTACT -->
@@ -1256,7 +1261,7 @@
         Send me a DM
       </a>
       <a href="mailto:destinyejikeme0@gmail.com" class="contact-btn email">
-        <div class="contact-btn-icon"></div>
+        <!-- <div class="contact-btn-icon"></div> -->
         Send me an email
       </a>
     </div>
@@ -1272,7 +1277,7 @@
     <li><a href="#">Privacy Policy</a></li>
     <li><a href="#">Instagram</a></li>
   </ul>
-  <div class="footer-credit">Designed with ♥</div>
+  <!-- <div class="footer-credit">Designed with ♥</div> -->
 </footer>
 
 <script>
